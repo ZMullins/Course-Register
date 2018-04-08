@@ -1,0 +1,10 @@
+/testHarness/
+/systemUsers/
+/authenticatedUsers/
+/customDatatypes/
+/systemUserModelFactories/
+/registrar/
+/offerings/
+/authenticationServer/
+/loggedInUserFactory/
+/application/

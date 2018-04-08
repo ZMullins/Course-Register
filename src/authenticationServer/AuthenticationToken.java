@@ -1,11 +1,16 @@
 package authenticationServer;
 
-public class AuthenticationToken {
+ public class AuthenticationToken {
 
 	private String userType;
 	private Integer tokenID;
 	private Integer SessionID;
-
+	public AuthenticationToken(String userType, Integer tokenID, Integer SessionID) {
+		this.userType = userType;
+		this.tokenID = tokenID;
+		this.SessionID = SessionID;
+	}
+	
 	public String getUserType() {
 		return userType;
 	}
