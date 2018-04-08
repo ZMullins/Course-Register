@@ -5,7 +5,8 @@ import java.io.IOException;
 import authenticationServer.AuthenticationToken;
 import authenticationServer.authenticationServer;
 import databaseServer.databaseServer;
-
+import transaction.Transaction;
+import InstructorTransactions.addMark;
 public class system {
 	private boolean stateOn;
 	private static authenticationServer authServer;
@@ -53,5 +54,24 @@ public class system {
 	
 	public void readCourseFile(String fileName) throws IOException {
 		dataServer.readCourseFile(fileName);
+	}
+	public void addMark(addMark transaction) {
+		if (canPerformTransaction(transaction)) {
+			dataServer.addMark(transaction);
+		}
+	}
+	public boolean canPerformTransaction(Transaction transaction) {
+		if (!stateOn) {
+			System.out.println("System is currently stopped. Unable to perform operation.");
+		}
+		else if (transaction.getToken().getUserType() == "instructor") {
+			if (transaction.getType() == "AddMark" || transaction.getType() == "ModifyMark" ||transaction.getType() == "FinalGrade" ||transaction.getType() == "ClassRecord" )
+				return true;
+		}
+		else if (transaction.getToken().getUserType() == "student") {
+			if (transaction.getType() == "Enroll" || transaction.getType() == "SelectNotification" ||transaction.getType() == "AddNotification" ||transaction.getType() == "CourseRecord" )
+				return true;
+		}
+		return false;
 	}
 }

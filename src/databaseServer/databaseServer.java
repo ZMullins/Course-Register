@@ -9,6 +9,7 @@ import offerings.CourseOffering;
 import offerings.ICourseOffering;
 import offerings.OfferingFactory;
 import systemUsers.StudentModel;
+import InstructorTransactions.addMark;
 
 public class databaseServer {
 	public void readCourseFile(String fileName) throws IOException {
@@ -34,6 +35,9 @@ public class databaseServer {
 			System.out.println(student.getName() + "\t\t -> " + course2.getCourseName());
 		}
 	
+	}
+	
+	public void addMark(addMark transaction) {
 	}
 	
 }

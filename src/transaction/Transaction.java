@@ -4,7 +4,7 @@ import authenticationServer.AuthenticationToken;
 
 public abstract class Transaction {
 	AuthenticationToken token;
-	String type;
+	protected static String type;
 	public AuthenticationToken getToken() {
 		return token;
 	}
@@ -14,8 +14,4 @@ public abstract class Transaction {
 	public String getType() {
 		return type;
 	}
-	public void setType(String type) {
-		this.type = type;
-	}
-
 }
