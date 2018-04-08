@@ -10,7 +10,6 @@ public class loginDetailsFactory {
 		try{
 		String line = null;
 		while ((line = br.readLine()) != null) {
-		line = br.readLine();
 		loginDetails login = new loginDetails();
 			String iD = line.split("\t")[0];
 			login.setPassword(line.split("\t")[1]);

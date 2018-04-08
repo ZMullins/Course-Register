@@ -1,3 +1,3 @@
-zach	meemee
-john	ohboyy!!@
-hi	1010
+zach	meemee	admin
+john	ohboyy!!@	admin
+hi	1010	admin

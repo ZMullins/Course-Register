@@ -5,6 +5,8 @@ import authenticatedUsers.LoggedInAuthenticatedUser;
 import authenticatedUsers.LoggedInInstructor;
 import authenticatedUsers.LoggedInStudent;
 import authenticationServer.AuthenticationToken;
+import registrar.ModelRegister;
+import systemUsers.SystemUserModel;
 
 public class LoggedInUserFactory {
 
@@ -26,17 +28,32 @@ public class LoggedInUserFactory {
 	}
 	
 	public LoggedInStudent createLoggedInStudent(AuthenticationToken authenticationToken){
-//		TODO add object creation logic
-		return new LoggedInStudent();
+		SystemUserModel getInfo = ModelRegister.getInstance().getRegisteredUser(authenticationToken.getTokenID());
+		LoggedInStudent result  = new LoggedInStudent();
+		result.setID(getInfo.getID());
+		result.setName(getInfo.getName());
+		result.setSurname(getInfo.getSurname());
+		result.setAuthenticationToken(authenticationToken);
+		return result;
 	}
 	
 	public LoggedInAdmin createLoggedInAdmin(AuthenticationToken authenticationToken){
-//		TODO add object creation logic
-		return new LoggedInAdmin();
+		SystemUserModel getInfo = ModelRegister.getInstance().getRegisteredUser(authenticationToken.getTokenID());
+		LoggedInAdmin result  = new LoggedInAdmin();
+		result.setID(getInfo.getID());
+		result.setName(getInfo.getName());
+		result.setSurname(getInfo.getSurname());
+		result.setAuthenticationToken(authenticationToken);
+		return result;
 	}
 	
 	public LoggedInInstructor createLoggedInInstructor(AuthenticationToken authenticationToken){
-//		TODO add object creation logic 
-		return new LoggedInInstructor();
+		SystemUserModel getInfo = ModelRegister.getInstance().getRegisteredUser(authenticationToken.getTokenID());
+		LoggedInInstructor result  = new LoggedInInstructor();
+		result.setID(getInfo.getID());
+		result.setName(getInfo.getName());
+		result.setSurname(getInfo.getSurname());
+		result.setAuthenticationToken(authenticationToken);
+		return result;
 	}
 }

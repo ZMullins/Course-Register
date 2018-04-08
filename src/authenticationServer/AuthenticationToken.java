@@ -3,9 +3,9 @@ package authenticationServer;
  public class AuthenticationToken {
 
 	private String userType;
-	private Integer tokenID;
+	private String tokenID;
 	private Integer SessionID;
-	public AuthenticationToken(String userType, Integer tokenID, Integer SessionID) {
+	public AuthenticationToken(String userType, String tokenID, Integer SessionID) {
 		this.userType = userType;
 		this.tokenID = tokenID;
 		this.SessionID = SessionID;
@@ -17,10 +17,10 @@ package authenticationServer;
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
-	public Integer getTokenID() {
+	public String getTokenID() {
 		return tokenID;
 	}
-	public void setTokenID(Integer tokenID) {
+	public void setTokenID(String tokenID) {
 		this.tokenID = tokenID;
 	}
 	public Integer getSessionID() {

@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class authenticationServer {
 HashMap<String,loginDetails> users;
-authenticationServer() throws IOException {
+public authenticationServer() throws IOException {
 	loginDetailsFactory factory = new loginDetailsFactory();
 	BufferedReader br = new BufferedReader(new FileReader(new File("users.txt")));
 //	Use the factory to populate as many instances of courses as many files we've got.
@@ -17,6 +17,12 @@ authenticationServer() throws IOException {
 }
 
 public AuthenticationToken loginAttempt(String ID, String password) {
-	return users.get(ID).loginAttempt(password);
+	try {
+		AuthenticationToken token = users.get(ID).loginAttempt(ID,password);
+		return token;
+	}
+	catch (NullPointerException e) {
+		return null;
+	}
 }
 }
