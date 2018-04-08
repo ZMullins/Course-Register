@@ -10,3 +10,6 @@
 /application/
 /system/
 /databaseServer/
+/Transaction/
+/InstructorTransactions/
+/transaction/

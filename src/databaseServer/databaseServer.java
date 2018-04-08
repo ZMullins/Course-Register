@@ -3,29 +3,23 @@ package databaseServer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 
 import offerings.CourseOffering;
 import offerings.ICourseOffering;
 import offerings.OfferingFactory;
-import registrar.ModelRegister;
 import systemUsers.StudentModel;
 
 public class databaseServer {
-	public void load() {
+	public void readCourseFile(String fileName) throws IOException {
 //	Create an instance of an OfferingFactory
 	OfferingFactory factory = new OfferingFactory();
-	BufferedReader br = new BufferedReader(new FileReader(new File("note_1.txt")));
+	BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
 //	Use the factory to populate as many instances of courses as many files we've got.
-	CourseOffering	courseOffering = factory.createCourseOffering(br);
+	CourseOffering	course = factory.createCourseOffering(br);
 	br.close();
-//	Loading 1 file at a time
-	br = new BufferedReader(new FileReader(new File("note_2.txt")));
-//	here we have only two files
-	courseOffering = factory.createCourseOffering(br);
-	br.close();
-//	code to perform sanity checking of all our code
-//	by printing all of the data that we've loaded
-	for(CourseOffering course : ModelRegister.getInstance().getAllCourses()){
+//	CourseOffering course = ModelRegister.getInstance().getRegisteredCourse(courseOffering.getCourseID());
+	System.out.println("\nFile was read successfully. Course below added to system: \n");
 		System.out.println("ID : " + course.getCourseID() + "\nCourse name : " + course.getCourseName() + "\nSemester : " + 
 		course.getSemester());
 		System.out.println("Students allowed to enroll\n");
@@ -39,9 +33,7 @@ public class databaseServer {
 			for(ICourseOffering course2 : student.getCoursesAllowed())
 			System.out.println(student.getName() + "\t\t -> " + course2.getCourseName());
 		}
-	}
 	
 	}
 	
-}
 }
