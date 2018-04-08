@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 import offerings.CourseOffering;
 import offerings.ICourseOffering;
 import offerings.OfferingFactory;
+import registrar.ModelRegister;
 import systemUsers.StudentModel;
 import InstructorTransactions.addMark;
 
@@ -38,6 +40,12 @@ public class databaseServer {
 	}
 	
 	public void addMark(addMark transaction) {
-	}
-	
+		CourseOffering course = ModelRegister.getInstance().getRegisteredCourse(transaction.getCourseID());
+		List<StudentModel> students = course.getStudentsEnrolled();
+		int i =0;
+		while (!students.get(i).getID().equals( transaction.getStudentID())) { 
+				i++;
+		}
+		students.get(i).getPerCourseMarks().get(course).addToEvalStrategy(transaction.getAssignmentorexam(), transaction.getMark());
+}
 }
