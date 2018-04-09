@@ -1,5 +1,6 @@
-package InstructorTransactions;
+package instructorTransactions;
 
+import authenticationServer.AuthenticationToken;
 import transaction.Transaction;
 
 public class addMark extends Transaction{
@@ -9,6 +10,13 @@ public class addMark extends Transaction{
 	double mark;
 	String studentID;
 	String assignmentorexam;
+	public addMark(String courseID, double mark, String studentID, String assignmentorexam, AuthenticationToken token) {
+		this.courseID = courseID;
+		this.mark = mark;
+		this.studentID = studentID;
+		this.assignmentorexam = assignmentorexam;
+		setToken(token);
+	}
 	public String getCourseID() {
 		return courseID;
 	}

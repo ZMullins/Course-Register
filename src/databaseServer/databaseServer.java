@@ -4,14 +4,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import instructorTransactions.addMark;
 import offerings.CourseOffering;
 import offerings.ICourseOffering;
 import offerings.OfferingFactory;
 import registrar.ModelRegister;
+import studentTransactions.Enroll;
 import systemUsers.StudentModel;
-import InstructorTransactions.addMark;
 
 public class databaseServer {
 	public void readCourseFile(String fileName) throws IOException {
@@ -47,5 +49,36 @@ public class databaseServer {
 				i++;
 		}
 		students.get(i).getPerCourseMarks().get(course).addToEvalStrategy(transaction.getAssignmentorexam(), transaction.getMark());
+		System.out.println("The mark was successfully added");
 }
+	public void modifyMark(addMark transaction) {
+		CourseOffering course = ModelRegister.getInstance().getRegisteredCourse(transaction.getCourseID());
+		List<StudentModel> students = course.getStudentsEnrolled();
+		int i =0;
+		while (!students.get(i).getID().equals( transaction.getStudentID())) { 
+				i++;
+		}
+		students.get(i).getPerCourseMarks().get(course).initializeIterator();
+		while (students.get(i).getPerCourseMarks().get(course).hasNext()) {
+			if (students.get(i).getPerCourseMarks().get(course).getNextEntry().getKey().equals(transaction.getAssignmentorexam())) {
+				students.get(i).getPerCourseMarks().get(course).getNextEntry().setValue(transaction.getMark());
+			}
+			students.get(i).getPerCourseMarks().get(course).next();
+		}
+		students.get(i).getPerCourseMarks().get(course).addToEvalStrategy(transaction.getAssignmentorexam(), transaction.getMark());
+		System.out.println("The mark was successfully changed");
+	}
+	
+	public void enroll(Enroll transaction) {
+		CourseOffering course = ModelRegister.getInstance().getRegisteredCourse(transaction.getCourseID());
+		List<StudentModel> students = course.getStudentsAllowedToEnroll();
+		int i =0;
+		while (!students.get(i).getID().equals( transaction.getStudentID())) { 
+			i++;
+			}
+		if (students.get(i).getCoursesEnrolled() == null)
+			students.get(i).setCoursesEnrolled(new ArrayList<ICourseOffering>());
+		students.get(i).getCoursesEnrolled().add(course);
+		System.out.println("You have successfully enrolled in " +course.getCourseName());
+	}
 }
