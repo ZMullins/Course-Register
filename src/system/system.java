@@ -5,8 +5,11 @@ import java.io.IOException;
 import authenticationServer.AuthenticationToken;
 import authenticationServer.authenticationServer;
 import databaseServer.databaseServer;
+import instructorTransactions.CalculateMark;
+import instructorTransactions.PrintRecord;
 import instructorTransactions.addMark;
 import studentTransactions.Enroll;
+import studentTransactions.SelectNotification;
 import transaction.Transaction;
 public class system {
 	private boolean stateOn;
@@ -61,10 +64,25 @@ public class system {
 			dataServer.modifyMark(transaction);
 		}
 	}
+	public void selectNotification(SelectNotification transaction) {
+		if (canPerformTransaction(transaction)) {
+			dataServer.selectNotification(transaction);
+		}
+	}
 	
 	public void addMark(addMark transaction) {
 		if (canPerformTransaction(transaction)) {
 			dataServer.addMark(transaction);
+		}
+	}
+	public void calculateMark(CalculateMark transaction) {
+		if (canPerformTransaction(transaction)) {
+			dataServer.calculateMark(transaction);
+		}
+	}
+	public void printRecord(PrintRecord transaction) {
+		if (canPerformTransaction(transaction)) {
+			dataServer.printRecord(transaction);
 		}
 	}
 	public void enroll(Enroll transaction) {
@@ -77,13 +95,13 @@ public class system {
 			System.out.println("System is currently stopped. Unable to perform operation.");
 		}
 		else if (transaction.getToken().getUserType().equals("instructor")) {
-			if (transaction.getType().equals("AddMark") ||transaction.getType().equals("FinalGrade") ||transaction.getType().equals("ClassRecord") )
+			if (transaction.getType().equals("AddMark") ||transaction.getType().equals("FinalGrade") ||transaction.getType().equals("Print") )
 				return true;
 		}
 		else if (transaction.getToken().getUserType().equals("student")) {
-			if (transaction.getType().equals("Enroll") || transaction.getType().equals("SelectNotification") ||transaction.getType().equals("AddNotification") ||transaction.getType().equals("CourseRecord") )
+			if (transaction.getType().equals("Enroll") || transaction.getType().equals("SelectNotification") ||transaction.getType().equals("AddNotification") ||transaction.getType().equals("Print") )
 				return true;
 		}
 		return false;
-	}
+}
 }
