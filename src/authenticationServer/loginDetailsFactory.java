@@ -1,5 +1,5 @@
 package authenticationServer;
-
+//Pulls user logins from the user text file
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;

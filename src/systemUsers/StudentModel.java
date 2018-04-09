@@ -1,11 +1,13 @@
 package systemUsers;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import customDatatypes.EvaluationTypes;
 import customDatatypes.Marks;
 import customDatatypes.NotificationTypes;
+import offerings.CourseOffering;
 import offerings.ICourseOffering;
 
 public class StudentModel implements IStudentModel{
@@ -19,7 +21,9 @@ public class StudentModel implements IStudentModel{
 //	the student has enrolled in.
 	private Map<ICourseOffering, Marks> perCourseMarks;
 	private NotificationTypes notificationType;
-	
+	public void addToCourseMarks(String assignment, double mark, CourseOffering course) {
+		perCourseMarks.get(course).addToEvalStrategy(assignment, mark);
+	}
 	public String getName() {
 		return name;
 	}

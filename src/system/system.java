@@ -1,5 +1,5 @@
 package system;
-
+//The main system, handles all requests and passes them onto other servers
 import java.io.IOException;
 
 import authenticationServer.AuthenticationToken;
@@ -39,6 +39,7 @@ public class system {
 	private void setState(boolean stateOn) {
 		this.stateOn =stateOn;
 	}
+	//start the server
 	public void start(AuthenticationToken authToken) {
 		if (authToken.getUserType().equals("admin")) {
 			setState(true);
@@ -46,12 +47,14 @@ public class system {
 		}
 		
 	}
+	//stop the server
 	public void stop(AuthenticationToken authToken) {
 		if (authToken.getUserType().equals("admin")) {
 			setState(false);
 			System.out.println("System stopped.");
 		}
 	}
+	//pass login attempt to authServer
 	public AuthenticationToken loginAttempt(String ID, String password) {
 		return authServer.loginAttempt(ID, password);
 	}
@@ -59,6 +62,8 @@ public class system {
 	public void readCourseFile(String fileName) throws IOException {
 		dataServer.readCourseFile(fileName);
 	}
+	
+	//Below are all the operations that go to databaseServer. They are checked here first to ensure the server is on and the user has the right token for the action
 	public void modifyMark(addMark transaction) {
 		if (canPerformTransaction(transaction)) {
 			dataServer.modifyMark(transaction);
@@ -85,21 +90,27 @@ public class system {
 			dataServer.printRecord(transaction);
 		}
 	}
+	public void printRecordS(PrintRecord transaction) {
+		if (canPerformTransaction(transaction)) {
+			dataServer.printRecordS(transaction);
+		}
+	}
 	public void enroll(Enroll transaction) {
 		if (canPerformTransaction(transaction)) {
 			dataServer.enroll(transaction);
 		}
 	}
+	//Checks if a user is allowed to perform a certain transaction
 	public boolean canPerformTransaction(Transaction transaction) {
 		if (!stateOn) {
 			System.out.println("System is currently stopped. Unable to perform operation.\n");
 		}
 		else if (transaction.getToken().getUserType().equals("instructor")) {
-			if (transaction.getType().equals("AddMark") ||transaction.getType().equals("FinalGrade") ||transaction.getType().equals("Print") )
+			if (transaction.getType().equals("AddMark") ||transaction.getType().equals("Calculate") ||transaction.getType().equals("Print") )
 				return true;
 		}
 		else if (transaction.getToken().getUserType().equals("student")) {
-			if (transaction.getType().equals("Enroll") || transaction.getType().equals("SelectNotification") ||transaction.getType().equals("AddNotification") ||transaction.getType().equals("Print") )
+			if (transaction.getType().equals("Enroll") || transaction.getType().equals("SelectNotification") ||transaction.getType().equals("Print") )
 				return true;
 		}
 		return false;

@@ -15,7 +15,9 @@ public class Marks {
 	Map<String, Double> evalStrategy;
 	Iterator<Entry<String, Double>> entrySet;
 	Entry<String, Double> currentEntry;
-
+	public Map<String,Double> getEvalStrategy(){
+		return evalStrategy;
+	}
 	public void addToEvalStrategy(String examOrAssignement, Double mark){
 		if(evalStrategy == null)
 			evalStrategy = new HashMap<String, Double>();

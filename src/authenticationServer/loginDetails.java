@@ -1,5 +1,5 @@
 package authenticationServer;
-
+//Login details is the users password and what type of user they are
 public class loginDetails {
 private String password;
 private String userType;

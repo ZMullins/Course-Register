@@ -101,6 +101,13 @@ public class CourseOffering implements ICourseOffering{
 		}
 	}
 
+	public Weights getListOfItems(String ID) {
+		StudentModel target = null;
+		for(StudentModel studentModel : studentsEnrolled)
+			if (studentModel.getID().equals(ID)) 
+				target = studentModel;
+		return evaluationStrategies.get(target.getEvaluationEntities().get(this));
+	}
 //	Calculates the Final Grades using the Weights and Marks utility classes see the comments in 
 //	these classes if unsure of how this works
 	public double calculateFinalGrade(String ID){
@@ -115,9 +122,31 @@ public class CourseOffering implements ICourseOffering{
 		weights.initializeIterator();
 		while(weights.hasNext()){
 			weights.next();
-			finalGrade += weights.getCurrentValue() * marks.getValueWithKey(weights.getCurrentKey());
+			try {
+			finalGrade += weights.getCurrentValue() * marks.getEvalStrategy().get(weights.getCurrentKey());}
+			catch (NullPointerException e) {
+				return -1;
+			}
 		}
 		return finalGrade;
 	}
+	
+	public void showRecord(String ID){
+		StudentModel target = null;
+		for(StudentModel studentModel : studentsEnrolled)
+			if (studentModel.getID().equals(ID)) 
+				target = studentModel;
+		Weights weights = evaluationStrategies.get(target.getEvaluationEntities().get(this));
+		Marks marks  = target.getPerCourseMarks().get(this);
+		weights.initializeIterator();
+		while(weights.hasNext()){
+			weights.next();
+			if (!( marks.getValueWithKey(weights.getCurrentKey())==null)) {
+			System.out.println(weights.getCurrentKey() + " mark is " + marks.getValueWithKey(weights.getCurrentKey()));}
+			else {
+				System.out.println("No mark yet for "+ weights.getCurrentKey());
+			}
+		}
+		}
 	
 }

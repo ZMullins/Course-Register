@@ -1,3 +1,6 @@
+//The basic transaction class all others inherit from
+//All transactions require a token and a type of transaction (declared statically)
+
 package transaction;
 
 import authenticationServer.AuthenticationToken;
