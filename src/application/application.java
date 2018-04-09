@@ -1,10 +1,8 @@
 package application;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 import authenticationServer.AuthenticationToken;
 import customDatatypes.NotificationTypes;
 import instructorTransactions.CalculateMark;
@@ -36,7 +34,7 @@ public class application {
 			String password = scanner.next();
 			token = server.loginAttempt(ID, password);
 			if (token == null) {
-				System.out.println("Invalid ID or password. Please try again.");
+				System.out.println("Invalid ID or password. Please try again.\n");
 			}
 				} while (token == null);
 	   
@@ -44,7 +42,7 @@ public class application {
 			adminPanel();
 		}
 		else if (!server.getState()) {
-			System.out.println("The System is stopped. You are unable to login until the Administrator starts it.");
+			System.out.println("The System is stopped. You are unable to login until the Administrator starts it.\n");
 			start();
 		}
 		else {
@@ -57,16 +55,30 @@ public class application {
 		 token = null; 
 		}
 	}
-	
+
 	private static void studentPanel() {
-		System.out.println("Welcome, " + token.getTokenID() + " (student)");
-		
+		System.out.println("\nWelcome, " + token.getTokenID() + " (student)\n");
+		StudentModel student = null;
+		List<CourseOffering> allCourses = ModelRegister.getInstance().getAllCourses();
+		for (int i =0; i<allCourses.size(); i++) {
+			List<StudentModel> allStudents = allCourses.get(i).getStudentsAllowedToEnroll();
+			for (int j=0; j<allStudents.size();j++) {
+			if (allCourses.get(i).getStudentsAllowedToEnroll().get(j).getID().equals(token.getTokenID())) {
+				student = allCourses.get(i).getStudentsAllowedToEnroll().get(j);
+				break;
+			}
+			}
+		}
+		while (student.getNotificationType() == null) {
+			System.out.println("You haven't set a notification type. You will now be asked to do so");
+			notification(token);
+		}
 		
 		System.out.println("Some commands: \"enroll\" enroll in a course. \"notification\" adjust notification settings. \"record\" print a record for a course you are attending");
 		String cmd = "";
 do {
 		 do {
-			 System.out.print("Enter a cmd: ");
+			 System.out.print("\nEnter a cmd: ");
 				cmd = scanner.next();
 		}while (!cmd.equals("enroll")&&!cmd.equals("notification")&&!cmd.equals("record")&&!cmd.equals("logout"))	;
 		 if (cmd.equals("enroll")) {
@@ -80,16 +92,18 @@ do {
 			 printRecordS(token);
 	}} while (!cmd.equals("logout"));
 	}
-		
+	
 	private static void enroll(AuthenticationToken token) {
 		String select;
 		List<CourseOffering> courses = new ArrayList<CourseOffering>();
 		List<CourseOffering> allCourses = ModelRegister.getInstance().getAllCourses();
+		StudentModel student = null;
 		for (int i =0; i<allCourses.size(); i++) {
 			List<StudentModel> allStudents = allCourses.get(i).getStudentsAllowedToEnroll();
 			for (int j=0; j<allStudents.size();j++) {
 			if (allCourses.get(i).getStudentsAllowedToEnroll().get(j).getID().equals(token.getTokenID())) {
 				courses.add(allCourses.get(i));
+				student=allCourses.get(i).getStudentsAllowedToEnroll().get(j);
 			}
 			}
 		}
@@ -103,17 +117,16 @@ do {
 		}
 		try {
 		do {
-			System.out.print("Make a selection: ");
+			System.out.print("\nMake a selection: ");
 			select = scanner.next();
 			} while (Integer.parseInt(select) < 1 || Integer.parseInt(select) > courses.size()); }
 		catch (NumberFormatException e) {
 			System.out.println("That's not a number, invalid input. Returning to main menu");
 			return;
 		}
-		server.enroll(new Enroll(courses.get(Integer.parseInt(select)-1).getCourseID(),token.getTokenID(),token));
+		server.enroll(new Enroll(courses.get(Integer.parseInt(select)-1),student,token));
 	}
-	//TODO - Try-Catch inputs
-	//TODO - notify student
+
 	private static void notification(AuthenticationToken token) {
 		String select;
 		int choice;
@@ -135,7 +148,7 @@ do {
 		NotificationTypes[] types = {NotificationTypes.EMAIL,NotificationTypes.CELLPHONE,NotificationTypes.PIGEON_POST};
 		try {
 			do {
-			System.out.print("Make a selection: ");
+			System.out.print("\nMake a selection: ");
 			select = scanner.next();
 			choice = Integer.parseInt(select); 
 			} while (choice != 1 && choice != 2 && choice!=3);
@@ -149,14 +162,14 @@ do {
 	private static void instructorPanel() {
 
 	
-System.out.println("Welcome, " + token.getTokenID() + " (instructor).");
+System.out.println("\nWelcome, " + token.getTokenID() + " (instructor).\n");
 		
 		
 		System.out.println("Some commands: \"add\" Add mark for a student in one of your courses. \"modify\" Adjust a student's mark. \"calculate\" Calculate a student's mark. \"print\" Print a class record for one of your courses.");
 		String cmd = "";
 do {
 		 do {
-			 System.out.print("Enter a cmd: ");
+			 System.out.print("\nEnter a cmd: ");
 				cmd = scanner.next();
 		}while (!cmd.equals("add")&&!cmd.equals("modify")&&!cmd.equals("calculate")&&!cmd.equals("print")&&!cmd.equals("logout"))	;
 		 if (cmd.equals("add")) {
@@ -192,7 +205,7 @@ do {
 			try { 
 				do {
 			
-			System.out.print("Make a selection: ");
+			System.out.print("\nMake a selection: ");
 			select = scanner.next();
 			} while (Integer.parseInt(select) < 1 || Integer.parseInt(select) > courses.size());}
 				catch (NumberFormatException e) {
@@ -202,7 +215,7 @@ do {
 			CourseOffering course = courses.get(Integer.parseInt(select)-1);
 			if (course.getStudentsEnrolled().size() ==0) {
 				System.out.println("There are no students enrolled in this course. Cannot add marks.");
-				instructorPanel();
+				return;
 			}
 			System.out.println("You have selected " + course.getCourseName() + " Which student gets the mark? (Type the number to select): ");
 			for (int i =0; i<course.getStudentsEnrolled().size();i++) {
@@ -239,7 +252,7 @@ private static void modifyMark(AuthenticationToken token) {
 			String select;
 			try {
 			do {
-			System.out.print("Make a selection: ");
+			System.out.print("\nMake a selection: ");
 			select = scanner.next();
 			} while (Integer.parseInt(select) < 1 || Integer.parseInt(select) > courses.size());}
 			catch (NumberFormatException e) {
@@ -249,23 +262,23 @@ private static void modifyMark(AuthenticationToken token) {
 			CourseOffering course = courses.get(Integer.parseInt(select)-1);
 			if (course.getStudentsEnrolled().size() ==0) {
 				System.out.println("There are no students enrolled in this course. Cannot modify marks.");
-				instructorPanel();
+				return;
 			}
 			System.out.println("You have selected " + course.getCourseName() + " Which student gets the mark? (Type the number to select): ");
 			for (int i =0; i<course.getStudentsEnrolled().size();i++) {
 				System.out.println((i+1)+". "+ course.getStudentsEnrolled().get(i).getName()+" "+course.getStudentsEnrolled().get(i).getSurname());
 			}try {
 			do {
-				System.out.print("Please make a selection: ");
+				System.out.print("\nPlease make a selection: ");
 			select = scanner.next();
 		} while (Integer.parseInt(select) < 1 || Integer.parseInt(select) > course.getStudentsEnrolled().size());}
 			catch (NumberFormatException e) {
-				System.out.println("That's not a number, invalid input. Returning to main menu");
+				System.out.println("That's not a number, invalid input. Returning to main menu\n");
 				return;
 			}
 
 			StudentModel student = course.getStudentsEnrolled().get(Integer.parseInt(select)-1);
-			System.out.println("You have selected" + student.getName() + ". What mark entity are you changing ?");
+			System.out.println("You have selected " + student.getName() + ". What mark entity are you changing ?");
 			List<String> assignments = new ArrayList<String>();
 			student.getPerCourseMarks().get(course).initializeIterator();
 			while (student.getPerCourseMarks().get(course).hasNext()) {
@@ -275,17 +288,27 @@ private static void modifyMark(AuthenticationToken token) {
 				System.out.println(assignments.size()+". " + assignments.get(assignments.size()-1));
 			}try {
 			do {
-			System.out.println("Make a selection (by the number): ");
+			System.out.print("Make a selection (by the number): ");
 			select = scanner.next();
 			} while (Integer.parseInt(select) < 1 || Integer.parseInt(select) > assignments.size());}
 			catch (NumberFormatException e) {
-				System.out.println("That's not a number, invalid input. Returning to main menu");
+				System.out.println("That's not a number, invalid input. Returning to main menu\n");
 				return;
 			}
 			String assignmentorexam = assignments.get(Integer.parseInt(select)-1);
-			System.out.println("What is the new mark?: ");
-			select = scanner.next();
-			server.modifyMark(new addMark(course.getCourseID(),Double.parseDouble(select),student.getID(),assignmentorexam,token));
+			System.out.print("What is the new mark?: ");
+			double mark;
+try {
+	
+	
+	select = scanner.next();
+	mark = Double.parseDouble(select);
+}	
+			catch (NumberFormatException e) {
+				System.out.println("Invalid input (not a number), Now returning to main menu");
+				return;
+			}
+			server.modifyMark(new addMark(course,mark,student,assignmentorexam,token));
 		}
 private static void printRecordS(AuthenticationToken token) {
 	List<CourseOffering> courses = new ArrayList<CourseOffering>();
@@ -305,7 +328,7 @@ private static void printRecordS(AuthenticationToken token) {
 return;	}
 	String select;
 	try{ do {
-	System.out.print("Make a selection: ");
+	System.out.print("\nMake a selection: ");
 	select = scanner.next();
 	} while (Integer.parseInt(select) < 1 || Integer.parseInt(select) > courses.size());}
 	catch (NumberFormatException e) {
@@ -335,7 +358,7 @@ private static void printRecordI(AuthenticationToken token) {
 	String select;
 	try {
 	do {
-	System.out.print("Make a selection: ");
+	System.out.print("\nMake a selection: ");
 	select = scanner.next();
 	} while (Integer.parseInt(select) < 1 || Integer.parseInt(select) > courses.size());}
 	catch (NumberFormatException e) {
@@ -364,7 +387,7 @@ private static void addMark(AuthenticationToken token) {
 			String select;
 			try {
 			do {
-			System.out.print("Make a selection: ");
+			System.out.print("\nMake a selection: ");
 			select = scanner.next();
 			} while (Integer.parseInt(select) < 1 || Integer.parseInt(select) > courses.size());}
 			catch (NumberFormatException e) {
@@ -374,14 +397,14 @@ private static void addMark(AuthenticationToken token) {
 			CourseOffering course = courses.get(Integer.parseInt(select)-1);
 			if (course.getStudentsEnrolled().size() ==0) {
 				System.out.println("There are no students enrolled in this course. Cannot add marks.");
-				instructorPanel();
+				return;
 			}
 			System.out.println("You have selected " + course.getCourseName() + " Which student gets the mark? (Type the number to select): ");
 			for (int i =0; i<course.getStudentsEnrolled().size();i++) {
 				System.out.println((i+1)+". "+ course.getStudentsEnrolled().get(i).getName()+" "+course.getStudentsEnrolled().get(i).getSurname());
 			} try {
 			do {
-				System.out.print("Please make a selection: ");
+				System.out.print("\nPlease make a selection: ");
 			select = scanner.next();
 		} while (Integer.parseInt(select) < 1 || Integer.parseInt(select) > course.getStudentsEnrolled().size());}
 			catch (NumberFormatException e) {
@@ -390,28 +413,34 @@ private static void addMark(AuthenticationToken token) {
 			}
 
 			StudentModel student = course.getStudentsEnrolled().get(Integer.parseInt(select)-1);
-			System.out.println("You have selected" + student.getName() + ". What type of mark are you adding?");
-			System.out.println("Enter name of Evaluation Type: ");
+			System.out.println("You have selected " + student.getName() + ". What type of mark are you adding?");
+			System.out.print("Enter name of Evaluation Type: ");
 			String assignmentorexam = scanner.next();
-			System.out.println("What is the mark?: ");
+			System.out.print("What is the mark?: ");
+			double mark;
+			try {
 			select = scanner.next();
-			server.addMark(new addMark(course.getCourseID(),Double.parseDouble(select),student.getID(),assignmentorexam,token));
+			mark = Double.parseDouble(select);}
+			catch (NumberFormatException e) {
+				System.out.println("Invalid input (not a number), Now returning to main menu");
+				return;
+			}
+			server.addMark(new addMark(course,mark,student,assignmentorexam,token));
 			
 		}
 
-	
 	private static void adminPanel() {
-		System.out.print("Welcome, " + token.getTokenID() + " (admin) the system is currently ");
+		System.out.print("\nWelcome, " + token.getTokenID() + " (admin) the system is currently ");
 		if (server.getState()) {
-			System.out.println("running. ");}
+			System.out.println("running.\n ");}
 		else {
-			System.out.println("stopped. ");
+			System.out.println("stopped. \n");
 		}
 		System.out.println("Some commands: \"start\" to start the system. \"stop\" to stop the system. \"load\" to load a course file. \"status\" to see state of system. \"logout\" to logout of this account.");
 		String cmd = "";
 do {
 		 do {
-			 System.out.print("Enter a cmd: ");
+			 System.out.print("\nEnter a cmd: ");
 				cmd = scanner.next();
 		}while (!cmd.equals("start")&&!cmd.equals("stop")&&!cmd.equals("load")&&!cmd.equals("logout")&&!cmd.equals("status"))	;
 		 if (cmd.equals("start")) 

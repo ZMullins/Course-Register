@@ -92,7 +92,7 @@ public class system {
 	}
 	public boolean canPerformTransaction(Transaction transaction) {
 		if (!stateOn) {
-			System.out.println("System is currently stopped. Unable to perform operation.");
+			System.out.println("System is currently stopped. Unable to perform operation.\n");
 		}
 		else if (transaction.getToken().getUserType().equals("instructor")) {
 			if (transaction.getType().equals("AddMark") ||transaction.getType().equals("FinalGrade") ||transaction.getType().equals("Print") )

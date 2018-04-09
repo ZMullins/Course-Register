@@ -1,28 +1,30 @@
 package studentTransactions;
 
 import authenticationServer.AuthenticationToken;
+import offerings.CourseOffering;
+import systemUsers.StudentModel;
 import transaction.Transaction;
 
 public class Enroll extends Transaction{
 	static {
 	type = "Enroll";}
-	public Enroll(String courseID, String studentID, AuthenticationToken token) {
-		this.courseID = courseID;
-		this.studentID = studentID;
+	public Enroll(CourseOffering course, StudentModel student, AuthenticationToken token) {
+		this.course = course;
+		this.student = student;
 		setToken(token);
 	}
-	public String getCourseID() {
-		return courseID;
+	CourseOffering course;
+	StudentModel student;
+	public CourseOffering getCourse() {
+		return course;
 	}
-	public void setCourseID(String courseID) {
-		this.courseID = courseID;
+	public void setCourse(CourseOffering course) {
+		this.course = course;
 	}
-	public String getStudentID() {
-		return studentID;
+	public StudentModel getStudent() {
+		return student;
 	}
-	public void setStudentID(String studentID) {
-		this.studentID = studentID;
+	public void setStudent(StudentModel student) {
+		this.student = student;
 	}
-	String courseID;
-	String studentID;
 }

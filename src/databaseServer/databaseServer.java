@@ -40,7 +40,6 @@ public class databaseServer {
 					"\nStudent ID : " + student.getID() + "\nStudent EvaluationType : " + 
 					student.getEvaluationEntities().get(course) + "\n\n");
 		}
-		
 		for(StudentModel student : course.getStudentsAllowedToEnroll()){
 			for(ICourseOffering course2 : student.getCoursesAllowed())
 			System.out.println(student.getName() + "\t\t -> " + course2.getCourseName());
@@ -49,20 +48,20 @@ public class databaseServer {
 	}
 	
 	public void addMark(addMark transaction) {
-		CourseOffering course = ModelRegister.getInstance().getRegisteredCourse(transaction.getCourseID());
+		CourseOffering course = ModelRegister.getInstance().getRegisteredCourse(transaction.getCourse().getCourseID());
 		List<StudentModel> students = course.getStudentsEnrolled();
 		int i =0;
-		while (!students.get(i).getID().equals( transaction.getStudentID())) { 
+		while (!students.get(i).getID().equals( transaction.getStudent().getID())) { 
 				i++;
 		}
 		students.get(i).getPerCourseMarks().get(course).addToEvalStrategy(transaction.getAssignmentorexam(), transaction.getMark());
-		System.out.println("The mark was successfully added");
+		System.out.println("The mark was successfully added. " + transaction.getStudent().getName() + " was notified by " + transaction.getStudent().getNotificationType());
 }
 	public void modifyMark(addMark transaction) {
-		CourseOffering course = ModelRegister.getInstance().getRegisteredCourse(transaction.getCourseID());
+		CourseOffering course = ModelRegister.getInstance().getRegisteredCourse(transaction.getCourse().getCourseID());
 		List<StudentModel> students = course.getStudentsEnrolled();
 		int i =0;
-		while (!students.get(i).getID().equals( transaction.getStudentID())) { 
+		while (!students.get(i).getID().equals( transaction.getStudent().getID())) { 
 				i++;
 		}
 		students.get(i).getPerCourseMarks().get(course).initializeIterator();
@@ -74,14 +73,14 @@ public class databaseServer {
 			students.get(i).getPerCourseMarks().get(course).next();
 		}
 		students.get(i).getPerCourseMarks().get(course).addToEvalStrategy(transaction.getAssignmentorexam(), transaction.getMark());
-		System.out.println("The mark was successfully changed");
+		System.out.println("The mark was successfully changed. " + transaction.getStudent().getName() + " was notified by " + transaction.getStudent().getNotificationType());
 	}
 	
 	public void enroll(Enroll transaction) {
-		CourseOffering course = ModelRegister.getInstance().getRegisteredCourse(transaction.getCourseID());
+		CourseOffering course = ModelRegister.getInstance().getRegisteredCourse(transaction.getCourse().getCourseID());
 		List<StudentModel> students = course.getStudentsAllowedToEnroll();
 		int i =0;
-		while (!students.get(i).getID().equals( transaction.getStudentID())) { 
+		while (!students.get(i).getID().equals( transaction.getStudent().getID())) { 
 			i++;
 			}
 		if (students.get(i).getCoursesEnrolled() == null)

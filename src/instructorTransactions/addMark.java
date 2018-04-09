@@ -1,27 +1,26 @@
 package instructorTransactions;
 
 import authenticationServer.AuthenticationToken;
+import offerings.CourseOffering;
+import systemUsers.StudentModel;
 import transaction.Transaction;
 
 public class addMark extends Transaction{
 	static {
 	type = "AddMark";}
-	String courseID;
+	CourseOffering course;
 	double mark;
-	String studentID;
+	StudentModel student;
 	String assignmentorexam;
-	public addMark(String courseID, double mark, String studentID, String assignmentorexam, AuthenticationToken token) {
-		this.courseID = courseID;
+	public addMark(CourseOffering course, double mark, StudentModel student, String assignmentorexam, AuthenticationToken token) {
+		this.course = course;
 		this.mark = mark;
-		this.studentID = studentID;
+		this.student = student;
 		this.assignmentorexam = assignmentorexam;
 		setToken(token);
 	}
-	public String getCourseID() {
-		return courseID;
-	}
-	public void setCourseID(String courseID) {
-		this.courseID = courseID;
+	public CourseOffering getCourse() {
+		return course;
 	}
 	public double getMark() {
 		return mark;
@@ -29,15 +28,18 @@ public class addMark extends Transaction{
 	public void setMark(double mark) {
 		this.mark = mark;
 	}
-	public String getStudentID() {
-		return studentID;
-	}
-	public void setStudentID(String studentID) {
-		this.studentID = studentID;
-	}
-	public String getAssignmentorexam() {
+public String getAssignmentorexam() {
 		return assignmentorexam;
 	}
+	public StudentModel getStudent() {
+	return student;
+}
+public void setStudent(StudentModel student) {
+	this.student = student;
+}
+public void setCourse(CourseOffering course) {
+	this.course = course;
+}
 	public void setAssignmentorexam(String assignmentorexam) {
 		this.assignmentorexam = assignmentorexam;
 	}

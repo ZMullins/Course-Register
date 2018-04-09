@@ -9,7 +9,6 @@ import customDatatypes.NotificationTypes;
 import offerings.ICourseOffering;
 
 public class StudentModel implements IStudentModel{
-	
 	private String name;
 	private String surname;
 	private String ID;

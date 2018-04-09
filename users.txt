@@ -1,5 +1,5 @@
-zach	meemee	admin
-john	ohboyy!!@	admin
-hi	1010	admin
+admin	1	admin
 1234	1	instructor
 1264	1	student
+5678	1	instructor
+3456	1	student
